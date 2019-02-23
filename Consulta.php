@@ -10,18 +10,19 @@
 		if(!preg_match($expReg, $numeroTelefono))
 			$mensaje = "No de telefono no valido";
 		else {
-			header('location:registro.php?encontrado=false&txtNumeroTelefonico=' . (string)$numeroTelefono);
 			//se carga el archivo en un arreglo		
 			$lstTelefonos = file($file);
 			foreach ($lstTelefonos as $telefono)
 			{
 				//limpiamos la cadena de caracteres extraños
-				if($numeroTelefono == trim($telefono))
+				$registro = explode("|", $telefono);
+				if($numeroTelefono == trim($registro[0]))
 				{
-					header('location:registro.php?encontrado=true');
+					header('location:registro.php?encontrado=' . $registro[1]);
 					exit;
 				}
 			}
+			header('location:registro.php?txtNumeroTelefonico=' . (string)$numeroTelefono);
 		}
 	}
 	else

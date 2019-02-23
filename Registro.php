@@ -4,18 +4,26 @@
     $noTelefonico = "";
     $mensaje = "";
     $enable = "";
+    $encontrado = "";
+    $accion = "Registrar";
     if(sizeof($_GET) > 0)
     {
+        $Entidad = "";
         if(isset($_GET["encontrado"]))
             $encontrado = $_GET["encontrado"];
         if(isset($_GET["txtNumeroTelefonico"]))
             $noTelefonico = $_GET["txtNumeroTelefonico"];
+        if(isset($_GET["txtEntidad"]))
+        {
+            $Entidad = $_GET["txtEntidad"];
+            $accion = "Actualizar";
+        }
         if(isset($encontrado))
         {
             $enable = "readonly";
-            if($encontrado == "true")
+            if($encontrado != "")
             {
-                $mensaje = "el número ya existe";
+                $mensaje = "el número ya existe es de ".$encontrado;
                 $display = "none";
             }
             else 
@@ -54,9 +62,36 @@
             $mensaje = "validar numero";
         }
         else {
-            $myfile = fopen($file, "a") or die("Unable to open file!");
-            fwrite($myfile, "".$postNoTelefonico."\n");
-            fclose($myfile);
+            $Entidad = "";
+            if(isset($_POST["txtEntidad"]))
+            {
+                $Entidad = $_POST["txtEntidad"];
+                $myfile = fopen($file, "a") or die("Unable to open file!");
+                fwrite($myfile, "".$postNoTelefonico."|".$Entidad . "\n");
+                fclose($myfile);
+            }
+            else
+            {
+                $Entidad = $_POST["txtEntidadmod"];
+                $lstTelefonos = file($file);
+                $texto = "";
+                foreach ($lstTelefonos as $telefono)
+                {
+                    //echo ($telefono);
+                    if(trim($telefono) != "")
+                    {
+                        $registro = explode("|", trim($telefono));
+                        if($registro[0] == $postNoTelefonico)
+                            $texto = $texto."".$registro[0]."|".$Entidad. "\n";
+                        else
+                            $texto = $texto."".$registro[0]."|".$registro[1]. "\n";
+                    }
+                }
+                $fp = fopen($file, "w");
+                fwrite($fp, $texto);
+                header('location:Admon.php');
+                exit;
+            }
             $mensaje = "número valido y almacenado :) ";
 		}
 	}
@@ -75,9 +110,11 @@
         <div style="display:<?php echo $display; ?>">
             <form method="POST" action="Registro.php">
                 <span>Escriba el número telefonico:</span>
+                <input type="text" id="txtEntidad" name="txtEntidad<?php if($Entidad!='') echo "mod"; ?>" 
+                    size="10" placeholder="Quien es?" value="<?php echo $Entidad; ?>"></input> 
                 <input type="text" id="txtNumeroTelefonico" name="txtNumeroTelefonico" size="10" placeholder="# telefonico" 
                     value="<?php echo $noTelefonico; ?>" <?php echo $enable; ?>></input> 
-                <input type="submit" id="btnButton" value="Registrar"/>
+                <input type="submit" id="btnButton" value="<?php echo $accion; ?>"/>
             </form>
         </div>
     </center>
