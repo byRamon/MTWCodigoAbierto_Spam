@@ -1,4 +1,19 @@
 <?php 
+    require_once "Clases/Miconexion.php";
+    $db = new Miconexion();
+    $query = "select * from 'tbldirectorio'";
+    $result = $db->Consulta($query);
+    if (mysqli_num_rows($result) > 0) {
+        while($fila = mysqli_fetch_assoc($result)){
+            echo $fila["ID_Directorio"];
+            echo $fila["Entidad"];
+            echo $fila["Telefono"];
+        }   
+    } 
+    else {
+        die("Error: No hay datos en la tabla seleccionada");
+    }
+
 	$file = str_replace("Admon.php", "flNumerosTelefono.txt", __FILE__);
     $lstTelefonos = file($file);
     if(sizeof($_GET) > 0)
