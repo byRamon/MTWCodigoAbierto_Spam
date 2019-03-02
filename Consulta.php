@@ -13,10 +13,10 @@
 
 			$query = "SELECT * FROM `tbldirectorio` WHERE TELEFONO = '". $numeroTelefono . "'";
 			$result = $db->Consulta($query);
-			$count = mysqli_num_rows($result);
+			$count = $db->registrosAfectados;
 			if($count > 0)
 			{
-				$telefono = $result->fetch_assoc();
+				$telefono = $db->ObtenerFilas();
 				header('location:registro.php?encontrado=' . $telefono['Entidad']);
 				exit;
 			}

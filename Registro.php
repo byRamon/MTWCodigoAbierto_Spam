@@ -91,6 +91,7 @@
                 {    
                     $query = "UPDATE `tbldirectorio` SET `Entidad`='". $Entidad ."',`Telefono`='". $postNoTelefonico ."' WHERE `ID_Directorio`= ".$id;
                 }
+                $count = $db->registrosAfectados;
                 if (!$result = $db->Consulta($query)) {
                     echo "Lo sentimos, este sitio web está experimentando problemas.";
                     exit;

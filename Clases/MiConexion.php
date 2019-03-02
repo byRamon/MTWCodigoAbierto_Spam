@@ -7,6 +7,9 @@
         var $username = "sa";
         var $password = "as";
         var $baseDatos = "spamDb";
+        var $respuestaQuery = null;
+
+        var $registrosAfectados = null;
 
         public function __construct()
         {
@@ -18,8 +21,16 @@
         }
         public function Consulta($consulta)
         {
-             $resp = $this->con->query($consulta);
-             return $resp;
+             $consulta = trim($consulta);
+             $this->respuestaQuery = $this->con->query($consulta);
+             if(strtoupper(explode(' ', $consulta)[0]) != "SELECT")
+                $this->registrosAfectados = mysqli_affected_rows($this->con);
+             else
+                $this->registrosAfectados = mysqli_num_rows($this->respuestaQuery);
+             return $this->respuestaQuery;
+        }
+        public function ObtenerFilas(){
+             return mysqli_fetch_assoc($this->respuestaQuery);
         }
     }
 ?>
