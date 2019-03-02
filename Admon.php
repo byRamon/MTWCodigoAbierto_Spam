@@ -1,41 +1,21 @@
 <?php 
     require_once "Clases/Miconexion.php";
     $db = new Miconexion();
-    $query = "select * from 'tbldirectorio'";
-    $result = $db->Consulta($query);
-    if (mysqli_num_rows($result) > 0) {
-        while($fila = mysqli_fetch_assoc($result)){
-            echo $fila["ID_Directorio"];
-            echo $fila["Entidad"];
-            echo $fila["Telefono"];
-        }   
-    } 
-    else {
-        die("Error: No hay datos en la tabla seleccionada");
-    }
-
-	$file = str_replace("Admon.php", "flNumerosTelefono.txt", __FILE__);
-    $lstTelefonos = file($file);
     if(sizeof($_GET) > 0)
-    {
+    {   
         if(isset($_GET["Delete"]))
-        {
+        {            
             $ind = $_GET["Delete"];
-            $lstTelefonos[$ind] = "";
-            $texto = "";
-            foreach ($lstTelefonos as $telefono)
-            {
-                //echo ($telefono);
-                if(trim($telefono) != "")
-                {
-                    $registro = explode("|", trim($telefono));
-                    $texto = $texto."".$registro[0]."|".$registro[1] . "\n";
-                }
+            $query = "DELETE FROM `tbldirectorio` WHERE ID_Directorio = ". $ind;
+            if (!$result = $db->Consulta($query)) {
+                echo "Lo sentimos, este sitio web está experimentando problemas.";
+                exit;
             }
-            $fp = fopen($file, "w");
-            fwrite($fp, $texto);
         }
     }
+    $query = "SELECT * FROM `tbldirectorio`";
+    $result = $db->Consulta($query);
+    $count = mysqli_num_rows($result);
 ?>
 <html lang="es-Mx">
 <head>
@@ -50,32 +30,36 @@
         <br/>
         <table border="1">
             <tr>
+                <th>Entidad</th>
                 <th>No. telefonico</th>
-                <th>Quien llama</th>
                 <th>Editar</th>
                 <th>Borrar</th>
             </tr>
-            <?php 
-                $Ind = 0;
-                foreach ($lstTelefonos as $telefono)
-                {
-                    if($telefono != "")
-                    {
-                        $registro = explode("|", $telefono);
+            <?php                 
+                if ($count > 0) {
+                    while($fila = mysqli_fetch_assoc($result)){
                         ?>
                         <tr>
-                            <td><?php echo $registro[0]; ?></td>
-                            <td><?php echo $registro[1]; ?></td>
-                            <td><input type="submit" value="Editar" onclick="window.location.assign('./Registro.php?txtNumeroTelefonico=<?php echo trim($registro[0]); ?>&txtEntidad=<?php echo trim($registro[1]); ?>');"/></td>
-                            <td><input type="submit" value="Delete" onclick="window.location.assign('./Admon.php?Delete=<?php echo $Ind; ?>');"/></td>
+                            <td><?php echo $fila["Entidad"]; ?></td>
+                            <td><?php echo $fila["Telefono"]; ?></td>
+                            <td><input type="submit" value="Editar" onclick="window.location.assign('./Registro.php?id=<?php echo $fila["ID_Directorio"]; ?>');"/></td>
+                            <td><input type="submit" value="Delete" onclick="window.location.assign('./Admon.php?Delete=<?php echo $fila["ID_Directorio"]; ?>');"/></td>
                         </tr>
                         <?php 
-                        $Ind = $Ind + 1;
                     }
                 }
             ?>
         </table>
+        <?php echo "Se han encontrado ".$count." registros" ?>        
         </div>
     </center>
 </body>
 </html>
+<?php 
+if(isset($db))
+{
+    if(isset($result))
+        $result->free();
+    $db->con->close();
+}
+?>

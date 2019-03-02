@@ -1,4 +1,5 @@
 <?php
+    $id ="";
     $sistema = false;
     $display = "block";
     $noTelefonico = "";
@@ -12,15 +13,31 @@
         if(isset($_GET["encontrado"]))
             $encontrado = $_GET["encontrado"];
         if(isset($_GET["txtNumeroTelefonico"]))
-            $noTelefonico = $_GET["txtNumeroTelefonico"];
-        if(isset($_GET["txtEntidad"]))
         {
-            $Entidad = $_GET["txtEntidad"];
+            $noTelefonico = $_GET["txtNumeroTelefonico"];
+            $enable = "readonly";
+        }
+        if(isset($_GET["id"]))
+        {
+            $id = $_GET["id"];            
+            require_once "Clases/Miconexion.php";
+            $db = new Miconexion();
+            $query = "SELECT * FROM `tbldirectorio` WHERE `ID_Directorio`= ".$id;
+            
+            if (!$result = $db->Consulta($query)) {
+                echo "Lo sentimos, este sitio web está experimentando problemas.";
+                exit;
+            }
+            else{
+                $count = mysqli_num_rows($result);
+                $telefono = $result->fetch_assoc();
+                $Entidad = $telefono['Entidad'];
+                $noTelefonico = $telefono['Telefono'];
+            }
             $accion = "Actualizar";
         }
         if(isset($encontrado))
         {
-            $enable = "readonly";
             if($encontrado != "")
             {
                 $mensaje = "el número ya existe es de ".$encontrado;
@@ -38,7 +55,6 @@
     }
     if(sizeof($_POST) > 0 && isset($_POST["txtNumeroTelefonico"]))
     {
-        $enable = "readonly";
         if(isset($_POST["txtNumeroTelefonico"]))
             $postNoTelefonico = $_POST["txtNumeroTelefonico"];
         $sistema = true;
@@ -47,14 +63,12 @@
     if(!$sistema)
     {
         //si no viene de consulta o de registro lo mandamos a consulta
-        //echo "real" . $sistema;
         header('location:consulta.php');
         exit;
     }
 	if(isset($postNoTelefonico))
 	{
         $numeroTelefono;
-        $file = str_replace("Registro.php", "flNumerosTelefono.txt", __FILE__);
 		$expReg = "/^[0-9]{10}$/"; 
 		//validacion de numero telefonico
         if(!preg_match($expReg, $postNoTelefonico))
@@ -63,36 +77,31 @@
         }
         else {
             $Entidad = "";
-            if(isset($_POST["txtEntidad"]))
+            require_once "Clases/Miconexion.php";
+            $db = new Miconexion();
+            if(isset($_POST["id"]))
             {
-                $Entidad = $_POST["txtEntidad"];
-                $myfile = fopen($file, "a") or die("Unable to open file!");
-                fwrite($myfile, "".$postNoTelefonico."|".$Entidad . "\n");
-                fclose($myfile);
-            }
-            else
-            {
-                $Entidad = $_POST["txtEntidadmod"];
-                $lstTelefonos = file($file);
-                $texto = "";
-                foreach ($lstTelefonos as $telefono)
-                {
-                    //echo ($telefono);
-                    if(trim($telefono) != "")
-                    {
-                        $registro = explode("|", trim($telefono));
-                        if($registro[0] == $postNoTelefonico)
-                            $texto = $texto."".$registro[0]."|".$Entidad. "\n";
-                        else
-                            $texto = $texto."".$registro[0]."|".$registro[1]. "\n";
-                    }
+                $id = $_POST["id"];
+                $Entidad = $_POST["txtEntidad"];   
+                if(strlen($id) < 1)
+                {            
+                    $query = "INSERT INTO `tbldirectorio`(`ID_Directorio`, `Entidad`, `Telefono`) VALUES ('','". $Entidad ."','". $postNoTelefonico ."') ";
                 }
-                $fp = fopen($file, "w");
-                fwrite($fp, $texto);
-                header('location:Admon.php');
-                exit;
+                else
+                {    
+                    $query = "UPDATE `tbldirectorio` SET `Entidad`='". $Entidad ."',`Telefono`='". $postNoTelefonico ."' WHERE `ID_Directorio`= ".$id;
+                }
+                if (!$result = $db->Consulta($query)) {
+                    echo "Lo sentimos, este sitio web está experimentando problemas.";
+                    exit;
+                }
+                if(strlen($id) > 0)
+                {
+                    header('location:Admon.php');
+                    exit;
+                }
+                $mensaje = "número valido y almacenado :) ";
             }
-            $mensaje = "número valido y almacenado :) ";
 		}
 	}
 ?>
@@ -109,9 +118,10 @@
         <br/>
         <div style="display:<?php echo $display; ?>">
             <form method="POST" action="Registro.php">
-                <span>Escriba el número telefonico:</span>
-                <input type="text" id="txtEntidad" name="txtEntidad<?php if($Entidad!='') echo "mod"; ?>" 
-                    size="10" placeholder="Quien es?" value="<?php echo $Entidad; ?>"></input> 
+                <span>Entidad:</span>
+                <input type="hidden" name="id" id="id" value="<?php echo $id ?>" />
+                <input type="text" id="txtEntidad" name="txtEntidad" size="10" placeholder="Quien es?" value="<?php echo $Entidad; ?>"></input> 
+                <span>No. Telefono:</span>
                 <input type="text" id="txtNumeroTelefonico" name="txtNumeroTelefonico" size="10" placeholder="# telefonico" 
                     value="<?php echo $noTelefonico; ?>" <?php echo $enable; ?>></input> 
                 <input type="submit" id="btnButton" value="<?php echo $accion; ?>"/>
@@ -120,3 +130,9 @@
     </center>
 </body>
 </html>
+<?php 
+if(isset($db))
+{
+    $db->con->close();
+}
+?>

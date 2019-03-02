@@ -1,28 +1,27 @@
-<?php		
+<?php	
 	if(sizeof($_POST) > 0 && isset($_POST["txtNumeroTelefonico"]))
 	{
 		$mensaje = "";
-		$file = str_replace("Consulta.php", "flNumerosTelefono.txt", __FILE__);
 		$expReg = "/^[0-9]{10}$/"; 
 		//leer de teclado
-		$numeroTelefono = $_POST["txtNumeroTelefonico"];
-		
+		$numeroTelefono = $_POST["txtNumeroTelefonico"];		
 		if(!preg_match($expReg, $numeroTelefono))
 			$mensaje = "No de telefono no valido";
 		else {
-			//se carga el archivo en un arreglo		
-			$lstTelefonos = file($file);
-			foreach ($lstTelefonos as $telefono)
+			require_once "Clases/Miconexion.php";
+			$db = new Miconexion();	
+
+			$query = "SELECT * FROM `tbldirectorio` WHERE TELEFONO = '". $numeroTelefono . "'";
+			$result = $db->Consulta($query);
+			$count = mysqli_num_rows($result);
+			if($count > 0)
 			{
-				//limpiamos la cadena de caracteres extraños
-				$registro = explode("|", $telefono);
-				if($numeroTelefono == trim($registro[0]))
-				{
-					header('location:registro.php?encontrado=' . $registro[1]);
-					exit;
-				}
+				$telefono = $result->fetch_assoc();
+				header('location:registro.php?encontrado=' . $telefono['Entidad']);
+				exit;
 			}
 			header('location:registro.php?txtNumeroTelefonico=' . (string)$numeroTelefono);
+			exit;
 		}
 	}
 	else
@@ -48,3 +47,11 @@
 	</center>
 </body>
 </html>
+<?php 
+if(isset($db))
+{
+    if(isset($result))
+        $result->free();
+    $db->con->close();
+}
+?>
