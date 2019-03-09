@@ -35,12 +35,13 @@
             <?php                 
                 if ($count > 0) {
                     while($fila = $db->ObtenerFilas()){
+                        extract($fila);
                         ?>
                         <tr>
-                            <td><?php echo $fila["Entidad"]; ?></td>
-                            <td><?php echo $fila["Telefono"]; ?></td>
-                            <td><input type="submit" value="Editar" onclick="window.location.assign('./Registro.php?id=<?php echo $fila["ID_Directorio"]; ?>');"/></td>
-                            <td><input type="submit" value="Delete" onclick="window.location.assign('./Admon.php?Delete=<?php echo $fila["ID_Directorio"]; ?>');"/></td>
+                            <td><?php echo $Entidad; ?></td>
+                            <td><?php echo $Telefono; ?></td>
+                            <td><input type="submit" value="Editar" onclick="window.location.assign('./Registro.php?id=<?php echo $ID_Directorio; ?>');"/></td>
+                            <td><input type="submit" value="Delete" onclick="window.location.assign('./Admon.php?Delete=<?php echo $ID_Directorio; ?>');"/></td>
                         </tr>
                         <?php 
                     }

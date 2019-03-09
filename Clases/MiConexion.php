@@ -8,7 +8,6 @@
         var $password = "as";
         var $baseDatos = "spamDb";
         var $respuestaQuery = null;
-
         var $registrosAfectados = null;
 
         public function __construct()
