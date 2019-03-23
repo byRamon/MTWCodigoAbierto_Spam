@@ -83,6 +83,7 @@
             {
                 $id = $_POST["id"];
                 $Entidad = $_POST["txtEntidad"];   
+                $Entidad = filter_var($Entidad,FILTER_SANITIZE_SPECIAL_CHARS);
                 if(strlen($id) < 1)
                 {            
                     $query = "INSERT INTO `tbldirectorio`(`ID_Directorio`, `Entidad`, `Telefono`) VALUES ('','". $Entidad ."','". $postNoTelefonico ."') ";

@@ -21,6 +21,7 @@
         public function Consulta($consulta)
         {
              $consulta = trim($consulta);
+             //echo $consulta;
              $this->respuestaQuery = $this->con->query($consulta);
              if(strtoupper(explode(' ', $consulta)[0]) != "SELECT")
                 $this->registrosAfectados = mysqli_affected_rows($this->con);

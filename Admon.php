@@ -1,4 +1,5 @@
 <?php 
+    session_start();
     require_once "Clases/Miconexion.php";
     $db = new Miconexion();
     if(sizeof($_GET) > 0)
@@ -22,6 +23,10 @@
     HtmlEncabezado();
 ?>
 <body>
+<div align="right">
+    id Empleado: <?php echo ' '.$_SESSION["EmpleadoID"] ?><br/>
+    Empleado: <?php echo ' '.$_SESSION["Nombre"] ?>
+</div>
     <center>
         <h1>Admon</h1>
         <br/>
