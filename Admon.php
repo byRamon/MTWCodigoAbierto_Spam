@@ -21,15 +21,16 @@
     //require_once "Html_Encabezado.php";
     require_once $_SERVER['DOCUMENT_ROOT']."/HtmlLibrerias.php";
     HtmlEncabezado();
-    if($_SESSION["EmpleadoID"] == null){        
-        header('location:Acceso.php');
+    if(!isset($_SESSION["EmpleadoID"])){        
+        echo "<script>location.replace('Consulta.php')</script>";
         exit;
     }
 ?>
 <body>
 <div align="right">
     id Empleado: <?php echo ' '.$_SESSION["EmpleadoID"] ?><br/>
-    Empleado: <?php echo ' '.$_SESSION["Nombre"] ?>
+    Empleado: <?php echo ' '.$_SESSION["Nombre"] ?><br/>
+	<a href="./index.php">Logout</a>
 </div>
     <center>
         <h1>Admon</h1>

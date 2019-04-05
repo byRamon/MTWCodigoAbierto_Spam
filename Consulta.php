@@ -36,6 +36,10 @@
 	<title>Proyecto spam</title>
 </head>
 <body>
+	<div align="right">
+		<a href="./Acceso.php">Login</a>
+	</div>
+	<br/>
 	<center>
 		<form method="POST" action="Consulta.php">
 			<span>Escriba el número telefonico:</span>

@@ -1,4 +1,5 @@
 <?php
+    session_start();
     $id ="";
     $sistema = false;
     $display = "block";
@@ -35,6 +36,10 @@
                 $noTelefonico = $telefono['Telefono'];
             }
             $accion = "Actualizar";
+            if(!isset($_SESSION["EmpleadoID"])){        
+                echo "<script>location.replace('Consulta.php')</script>";
+                exit;
+            }
         }
         if(isset($encontrado))
         {

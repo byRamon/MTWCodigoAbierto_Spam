@@ -6,7 +6,7 @@
         include_once $_SERVER['DOCUMENT_ROOT'].'/Librerias/securimage/securimage.php';
         $securimage = new Securimage();
         $captchCorrecto = $securimage->check($_POST['captcha_code']);
-        if ($captchCorrecto == true) {
+        if ($captchCorrecto == false) {
             $mensaje = "</br>Captcha incorrecto";
         }
         else{
