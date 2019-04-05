@@ -5,8 +5,8 @@
         var $con = null;
         var $servername = "localhost";
         var $username = "sa";
-        var $password = "as";
-        var $baseDatos = "spamDb";
+        var $password = "P@ssw0rd";
+        var $baseDatos = "id9054944_spamdb";
         var $respuestaQuery = null;
         var $registrosAfectados = null;
 

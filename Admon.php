@@ -1,6 +1,6 @@
 <?php 
     session_start();
-    require_once "Clases/Miconexion.php";
+    require_once $_SERVER['DOCUMENT_ROOT']."/Clases/MiConexion.php";
     $db = new Miconexion();
     if(sizeof($_GET) > 0)
     {   
@@ -19,8 +19,12 @@
     $result = $db->Consulta($query);
     $count = $db->registrosAfectados;
     //require_once "Html_Encabezado.php";
-    require_once "HtmlLibrerias.php";
+    require_once $_SERVER['DOCUMENT_ROOT']."/HtmlLibrerias.php";
     HtmlEncabezado();
+    if($_SESSION["EmpleadoID"] == null){        
+        header('location:Acceso.php');
+        exit;
+    }
 ?>
 <body>
 <div align="right">

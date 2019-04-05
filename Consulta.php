@@ -8,19 +8,18 @@
 		if(!preg_match($expReg, $numeroTelefono))
 			$mensaje = "No de telefono no valido";
 		else {
-			require_once "Clases/Miconexion.php";
+			require_once $_SERVER['DOCUMENT_ROOT']."/Clases/MiConexion.php";
 			$db = new Miconexion();	
-
 			$query = "SELECT * FROM `tbldirectorio` WHERE TELEFONO = '". $numeroTelefono . "'";
 			$result = $db->Consulta($query);
 			$count = $db->registrosAfectados;
 			if($count > 0)
 			{
 				$telefono = $db->ObtenerFilas();
-				header('location:registro.php?encontrado=' . $telefono['Entidad']);
+				header('location:Registro.php?encontrado=' . $telefono['Entidad']);
 				exit;
 			}
-			header('location:registro.php?txtNumeroTelefonico=' . (string)$numeroTelefono);
+			header('location:Registro.php?txtNumeroTelefonico=' . (string)$numeroTelefono);
 			exit;
 		}
 	}

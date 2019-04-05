@@ -20,7 +20,7 @@
         if(isset($_GET["id"]))
         {
             $id = $_GET["id"];            
-            require_once "Clases/Miconexion.php";
+			require_once $_SERVER['DOCUMENT_ROOT']."/Clases/MiConexion.php";
             $db = new Miconexion();
             $query = "SELECT * FROM `tbldirectorio` WHERE `ID_Directorio`= ".$id;
             
@@ -63,7 +63,7 @@
     if(!$sistema)
     {
         //si no viene de consulta o de registro lo mandamos a consulta
-        header('location:consulta.php');
+        header('location:Consulta.php');
         exit;
     }
 	if(isset($postNoTelefonico))
@@ -77,7 +77,7 @@
         }
         else {
             $Entidad = "";
-            require_once "Clases/Miconexion.php";
+			require_once $_SERVER['DOCUMENT_ROOT']."/Clases/MiConexion.php";
             $db = new Miconexion();
             if(isset($_POST["id"]))
             {
@@ -86,7 +86,7 @@
                 $Entidad = filter_var($Entidad,FILTER_SANITIZE_SPECIAL_CHARS);
                 if(strlen($id) < 1)
                 {            
-                    $query = "INSERT INTO `tbldirectorio`(`ID_Directorio`, `Entidad`, `Telefono`) VALUES ('','". $Entidad ."','". $postNoTelefonico ."') ";
+                    $query = "INSERT INTO `tbldirectorio`(`ID_Directorio`, `Entidad`, `Telefono`) VALUES (0,'". $Entidad ."','". $postNoTelefonico ."') ";
                 }
                 else
                 {    
@@ -119,7 +119,7 @@
         <span><?php echo $mensaje; ?></span>
         <br/>
         <div style="display:<?php echo $display; ?>">
-            <form method="POST" action="Registro.php">
+            <form method="POST" action="./Registro.php">
                 <span>Entidad:</span>
                 <input type="hidden" name="id" id="id" value="<?php echo $id ?>" />
                 <input type="text" id="txtEntidad" name="txtEntidad" size="10" placeholder="Quien es?" value="<?php echo $Entidad; ?>"></input> 
